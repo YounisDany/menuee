@@ -16,7 +16,8 @@
       left: 0;
       width: 100%;
       height: 100%;
-      overflow-y: scroll; /* تمكين التمرير عموديًا */
+      overflow-y: auto; /* تمكين التمرير عموديًا */
+      cursor: grab; /* تغيير المؤشر عند السحب */
     }
     canvas {
       display: block;
@@ -32,8 +33,7 @@
   <script>
     const url = 'n.pdf';  // استبدل هذه السطر برابط ملف PDF الخاص بك
 
-    let pdfDoc = null,
-        pageNum = 1;
+    let pdfDoc = null;
 
     const pdfViewer = document.getElementById('pdf-viewer');
 
@@ -76,6 +76,56 @@
     });
     window.addEventListener('gesturechange', function(event) {
       event.preventDefault();
+    });
+
+    // تمكين التمرير عند السحب للأسفل
+    let isDragging = false;
+    let startY, scrollTop;
+
+    pdfViewer.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      startY = e.pageY - pdfViewer.offsetTop;
+      scrollTop = pdfViewer.scrollTop;
+      pdfViewer.style.cursor = 'grabbing';
+    });
+
+    pdfViewer.addEventListener('mouseleave', () => {
+      isDragging = false;
+      pdfViewer.style.cursor = 'grab';
+    });
+
+    pdfViewer.addEventListener('mouseup', () => {
+      isDragging = false;
+      pdfViewer.style.cursor = 'grab';
+    });
+
+    pdfViewer.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      e.preventDefault();
+      const y = e.pageY - pdfViewer.offsetTop;
+      const walk = (y - startY) * 1.5; // سرعة التمرير
+      pdfViewer.scrollTop = scrollTop - walk;
+    });
+
+    // تمكين السحب للتمرير على الأجهزة اللمسية
+    let touchStartY = 0;
+    let touchScrollTop = 0;
+
+    pdfViewer.addEventListener('touchstart', (e) => {
+      isDragging = true;
+      touchStartY = e.touches[0].pageY - pdfViewer.offsetTop;
+      touchScrollTop = pdfViewer.scrollTop;
+    });
+
+    pdfViewer.addEventListener('touchend', () => {
+      isDragging = false;
+    });
+
+    pdfViewer.addEventListener('touchmove', (e) => {
+      if (!isDragging) return;
+      const y = e.touches[0].pageY - pdfViewer.offsetTop;
+      const walk = (y - touchStartY) * 1.5; // سرعة التمرير
+      pdfViewer.scrollTop = touchScrollTop - walk;
     });
   </script>
 </body>
