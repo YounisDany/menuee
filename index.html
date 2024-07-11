@@ -11,21 +11,14 @@
       overflow: hidden;
     }
     #pdf-viewer {
-      position: absolute;
-      top: 0;
-      left: 0;
+      position: relative;
       width: 100%;
       height: 100%;
-      overflow-y: scroll; /* تمكين التمرير عمودياً */
-      -ms-overflow-style: none;  /* تعطيل شريط التمرير في IE و Edge */
-      scrollbar-width: none;  /* تعطيل شريط التمرير في Firefox */
-    }
-    #pdf-viewer::-webkit-scrollbar {
-      display: none;  /* تعطيل شريط التمرير في Chrome و Safari */
+      overflow-y: scroll; /* تمكين التمرير عموديًا */
     }
     canvas {
       display: block;
-      width: 100%;  /* لضبط عرض الصفحة داخل الكانفاس */
+      margin: 0 auto;
     }
   </style>
 </head>
